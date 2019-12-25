@@ -32,3 +32,16 @@ train.isnull().sum()
 x = sns.catplot('Incidence of Juvenile Crimes', data = train, kind = 'count', aspect = 3, height = 4.5)
 x.set_xticklabels(rotation = 85)
 
+le = preprocessing.LabelEncoder()
+jCrimes = le.fit_transform(train['Incidence of Juvenile Crimes'])
+
+training, validation = train_test_split(jCrimes, train_size = 0.60)
+
+start = time.time()
+model = BernoulliNB()
+model.fit(training[features], training['jCrimes'])
+predicted = np.array(model.predict_proba(validation[features]))
+end = time.time()
+secs = (end - start)
+loss = log_loss(validation['jCrimes'], predicted)
+print("Total seconds: {} and loss {}".format(secs, loss))
